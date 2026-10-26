@@ -1,6 +1,6 @@
 ## Interface: 16001
 ## Title: GoldPerSpot
-## Notes: Gold/hour for farming sessions from looted mats and coin, valued at your own AH scan prices (or vendor). UNTESTED IN-GAME (WoW: Forever not launched); API checked against Blizzard UI source only. Use at your own risk.
+## Notes: Gold/hour for farming sessions from looted mats and coin, valued at your own AH scan prices (or vendor).
 ## Author: Kenny
 ## Version: 0.1.0
 ## SavedVariables: KennyGoldPerSpotDB

@@ -4,13 +4,6 @@
 
 *Formerly "FarmTracker" in [wow-forever-addons](https://github.com/masterred92/wow-forever-addons). It was renamed because several addons on CurseForge already use "FarmTracker".*
 
-> [!WARNING]
-> **Untested in-game. Use at your own risk.** WoW: Forever has not launched yet (Nov 4 2026), so none of this has run in the real client.
-> - API usage is verified against Blizzard's UI source only (Gethe/wow-ui-source `forever` branch, 1.60.1 build 70374), plus luacheck and mock-client tests.
-> - Item IDs were checked against auctionhouse.fyi's Forever item data (build 1.60.1.70009), not in-game.
-> - `## Interface: 16001` is unconfirmed (the UI source .toc files show `0`).
-> - Found a bug? Use the addon's `report` command and [open an issue](https://github.com/masterred92/GoldPerSpot/issues).
-
 Tracks a farming session and shows, in a small movable frame:
 - spot name and session time
 - total value and **gold per hour**
