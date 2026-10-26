@@ -6,6 +6,9 @@
 ## SavedVariables: KennyGoldPerSpotDB
 ## OptionalDeps: PriceLog, MatTooltip
 ## X-License: MIT
+## IconTexture: Interface\AddOns\GoldPerSpot\media\icon
+## X-Curse-Project-ID: 1767898
+## X-Wago-ID: rNkg9mNa
 
 Compat.lua
 Core.lua

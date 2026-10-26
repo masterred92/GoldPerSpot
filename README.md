@@ -1,6 +1,8 @@
+<p align="center"><img src="media/logo.png" alt="GoldPerSpot logo" width="200"></p>
+
 # GoldPerSpot (WoW: Forever) v0.1.0
 
-*Formerly "GoldPerSpot" in [wow-forever-addons](https://github.com/masterred92/wow-forever-addons). It was renamed because several addons on CurseForge already use "GoldPerSpot".*
+*Formerly "FarmTracker" in [wow-forever-addons](https://github.com/masterred92/wow-forever-addons). It was renamed because several addons on CurseForge already use "FarmTracker".*
 
 > [!WARNING]
 > **Untested in-game. Use at your own risk.** WoW: Forever has not launched yet (Nov 4 2026), so none of this has run in the real client.
@@ -25,8 +27,8 @@ How it counts:
 Read-only: it never loots, clicks or moves for you.
 
 ## Download
-- **CurseForge:** coming soon (TODO: project not created yet). Meanwhile see [MasterRed92 on CurseForge](https://www.curseforge.com/members/masterred92/projects).
-- **Wago Addons:** coming soon (TODO: project not created yet).
+- **CurseForge:** https://www.curseforge.com/wow/addons/goldperspot (first release coming at launch, Nov 4). Author: [MasterRed92](https://www.curseforge.com/members/masterred92/projects).
+- **Wago Addons:** https://addons.wago.io/addons/goldperspot (first release coming at launch, Nov 4).
 - **GitHub:** [Releases](https://github.com/masterred92/GoldPerSpot/releases) (coming with the first tagged release) · [Issues](https://github.com/masterred92/GoldPerSpot/issues)
 - **Companion addons** (optional, they share AH scans): [NeutralFlip](https://github.com/masterred92/NeutralFlip) · [PriceLog](https://github.com/masterred92/PriceLog) · [MatTooltip](https://github.com/masterred92/MatTooltip)
 
@@ -50,6 +52,7 @@ The frame has Start, Pause, Stop and Bug (report) buttons.
 7. With PriceLog or MatTooltip scan data, mats show AH value (no `(v)`). Without a scan, they show `(v)`.
 8. Stop after 5 or more minutes, farm a second spot, and check the verdict line compares the two. `/goldspot history` lists both.
 9. `/goldspot report` or the Bug button: a copyable report opens.
+10. In the AddOns list (character select or Esc > AddOns), GoldPerSpot shows its icon. If it shows a blank or green square, report it; the addon still works.
 
 ## Development
 `tests/run.sh [path-to-wow-ui-source-forever]` runs `luac -p`, luacheck, the mock-client tests and (with a path) the API check against Blizzard's UI source. GitHub Actions runs the same on every push. Releases are packaged by [BigWigsMods/packager](https://github.com/BigWigsMods/packager) only when a `v*` tag is pushed.
