@@ -155,6 +155,14 @@ function FT.Lines()
   return lines
 end
 
+-- Current session for the LDB display: total, gold/hour, spot, state ("running", "paused", "stopped") or nil.
+function FT.Current()
+  if not s then return nil end
+  tick()
+  local total, gph = FT.Totals(s, settings.valuation)
+  return total, gph, s.spot, s.paused and "paused" or (s.running and "running" or "stopped")
+end
+
 local function button(parent, text, x, fn)
   local b = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
   b:SetSize(56, 20)

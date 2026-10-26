@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+- LibDataBroker display (Titan Panel, ChocolateBar, Bazooka...): live gold/hour; tooltip shows the session; left-click shows/hides the window, right-click starts or pauses.
+- Tests now fail CI on any luacheck warning, and the API check also covers LibDataBroker calls.
+
 ## 0.1.0 (first public release)
 - Added the CurseForge and Wago project IDs to the TOC for automatic packaging, and an icon for the AddOns list (`media/icon.tga`).
 - **Renamed from FarmTracker** (GitHub pre-release FarmTracker-v0.1.0 in masterred92/wow-forever-addons) so the name is unique on CurseForge, Wago and GitHub. The folder, TOC title, slash commands (`/goldspot`, `/kspot`), SavedVariables (`KennyGoldPerSpotDB`) and frame names all changed. Sessions saved by FarmTracker 0.1.0 are not carried over, because the folder rename gives a new SavedVariables file and that build was never released on CurseForge.

@@ -1,6 +1,8 @@
 <p align="center"><img src="media/logo.png" alt="GoldPerSpot logo" width="200"></p>
 
-# GoldPerSpot (WoW: Forever) v0.1.0
+# GoldPerSpot (WoW: Forever) v0.2.0
+
+[![Tests](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml/badge.svg)](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml) [![WoW: Forever](https://img.shields.io/badge/WoW%3A%20Forever-Interface%2016001-c8a165)](https://github.com/masterred92/GoldPerSpot/blob/main/GoldPerSpot.toc) [![Release](https://img.shields.io/github/v/release/masterred92/GoldPerSpot?label=release)](https://github.com/masterred92/GoldPerSpot/releases) [![License: MIT](https://img.shields.io/github/license/masterred92/GoldPerSpot)](https://github.com/masterred92/GoldPerSpot/blob/main/LICENSE) [![CurseForge](https://img.shields.io/badge/CurseForge-GoldPerSpot-f16436)](https://www.curseforge.com/wow/addons/goldperspot) [![Wago](https://img.shields.io/badge/Wago-GoldPerSpot-c1272d)](https://addons.wago.io/addons/goldperspot)
 
 *Formerly "FarmTracker" in [wow-forever-addons](https://github.com/masterred92/wow-forever-addons). It was renamed because several addons on CurseForge already use "FarmTracker".*
 
@@ -18,6 +20,9 @@ How it counts:
 - **History:** sessions of 1 minute or more are saved per spot (up to 50 each). Only sessions of 5 minutes or more count as a "best".
 
 Read-only: it never loots, clicks or moves for you.
+
+**New in 0.2.0**
+- **LDB display:** with Titan Panel, ChocolateBar, Bazooka or another LibDataBroker display, GoldPerSpot shows your current gold/hour. Hover for the full session, left-click shows or hides the window, right-click starts or pauses a session.
 
 ## Download
 - **CurseForge:** https://www.curseforge.com/wow/addons/goldperspot (first release coming at launch, Nov 4). Author: [MasterRed92](https://www.curseforge.com/members/masterred92/projects).
@@ -46,6 +51,7 @@ The frame has Start, Pause, Stop and Bug (report) buttons.
 8. Stop after 5 or more minutes, farm a second spot, and check the verdict line compares the two. `/goldspot history` lists both.
 9. `/goldspot report` or the Bug button: a copyable report opens.
 10. In the AddOns list (character select or Esc > AddOns), GoldPerSpot shows its icon. If it shows a blank or green square, report it; the addon still works.
+11. With Titan Panel or ChocolateBar: the Gold/hr display shows 'no session'; right-click starts one and the number updates; hide the window and it still updates.
 
 ## Development
 `tests/run.sh [path-to-wow-ui-source-forever]` runs `luac -p`, luacheck, the mock-client tests and (with a path) the API check against Blizzard's UI source. GitHub Actions runs the same on every push. Releases are packaged by [BigWigsMods/packager](https://github.com/BigWigsMods/packager) only when a `v*` tag is pushed.
