@@ -1,4 +1,4 @@
--- Farm Tracker: gold/hour for a farming session. Read-only tracking, no automation.
+-- GoldPerSpot (formerly Farm Tracker): gold/hour for a farming session. Read-only tracking, no automation.
 -- Items are counted by diffing your bags (locale-free, and it avoids loot chat text, which can be
 -- a secret value on Midnight-API clients). Coin counts only while a loot window is open.
 local ADDON, ns = ...
@@ -11,9 +11,9 @@ local MAX_SESSIONS_PER_SPOT = 50
 local DEFAULTS = { valuation = "ah", shown = true, locked = false }
 
 local FT = {}
-KennyFarmTracker = FT
+KennyGoldPerSpot = FT
 local db, settings, s -- s = the current session (not saved until Stop)
-local migrations = {}  -- schema 1 is the first release
+local migrations = {}  -- schema 1 is the first release. No migration from FarmTracker 0.1.0: the folder rename gives a new SavedVariables file, and FarmTracker was only a GitHub pre-release.
 
 -- ---------- pricing ----------
 function FT.AHPrice(itemID)
@@ -138,7 +138,7 @@ local function fmtTime(sec)
 end
 
 function FT.Lines()
-  if not s then return { "No session. Click Start or /kfarm start" } end
+  if not s then return { "No session. Click Start or /goldspot start" } end
   tick()
   local total, gph, list = FT.Totals(s, settings.valuation)
   local state = s.paused and " (paused)" or (s.running and "" or " (stopped)")
@@ -173,7 +173,7 @@ function FT.StateLines()
 end
 
 -- Default spot: left-middle of the screen, clear of the minimap, quest tracker and guide frames
--- (top-right) and action bars (bottom). Movable, clamped, saved per account; /kfarm resetpos.
+-- (top-right) and action bars (bottom). Movable, clamped, saved per account; /goldspot resetpos.
 local DEFAULT_POINT = { "LEFT", 24, 40 }
 
 function FT.Place()
@@ -183,7 +183,7 @@ function FT.Place()
 end
 
 function FT.BuildFrame()
-  frame = CreateFrame("Frame", "KennyFarmTrackerFrame", UIParent, "BackdropTemplate")
+  frame = CreateFrame("Frame", "KennyGoldPerSpotFrame", UIParent, "BackdropTemplate")
   frame:SetSize(250, 170)
   frame:SetFrameStrata("MEDIUM")
   frame:SetClampedToScreen(true)
@@ -250,9 +250,9 @@ end
 ev:SetScript("OnEvent", function(_, event, arg1)
   if event == "ADDON_LOADED" then
     if arg1 ~= ADDON then return end
-    db = Core.Migrate(KennyFarmTrackerDB, migrations, SCHEMA)
+    db = Core.Migrate(KennyGoldPerSpotDB, migrations, SCHEMA)
     db.spots = db.spots or {}
-    KennyFarmTrackerDB = db
+    KennyGoldPerSpotDB = db
     settings = Core.Settings(db.settings, DEFAULTS)
     FT.BuildFrame()
     frame:SetShown(settings.shown)
@@ -263,9 +263,9 @@ ev:SetScript("OnEvent", function(_, event, arg1)
   if db then Core.SafeCall(event, onEvent, event, arg1) end
 end)
 
-SLASH_KENNYFARMTRACKER1 = "/kfarm"
-SLASH_KENNYFARMTRACKER2 = "/farmtracker"
-SlashCmdList.KENNYFARMTRACKER = function(msg)
+SLASH_KENNYGOLDPERSPOT1 = "/goldspot"
+SLASH_KENNYGOLDPERSPOT2 = "/kspot"
+SlashCmdList.KENNYGOLDPERSPOT = function(msg)
   local cmd, rest = (msg or ""):match("^(%S*)%s*(.-)$")
   cmd = cmd:lower()
   if cmd == "start" then FT.Start(rest)
@@ -287,6 +287,6 @@ SlashCmdList.KENNYFARMTRACKER = function(msg)
   elseif cmd == "report" then Core.ShowReport(FT.StateLines())
   elseif cmd == "reset" and rest == "confirm" then db.spots = {}; Core.Print("history cleared.")
   else
-    Core.Print("/kfarm start [spot] | pause | resume | stop | show | hide | lock | resetpos | history | value ah|vendor | report | reset confirm")
+    Core.Print("/goldspot start [spot] | pause | resume | stop | show | hide | lock | resetpos | history | value ah|vendor | report | reset confirm")
   end
 end
