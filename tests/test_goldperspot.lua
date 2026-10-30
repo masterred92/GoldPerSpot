@@ -7,6 +7,8 @@ KennyPriceLog = { GetLatest = function(id) return plPrices[id] end,
   Record = function(id, _, p, _, n, _, t) plPrices[id] = { p = p, t = t, n = n } end }
 local ns = W.loadAddon(".", "GoldPerSpot")
 local FT, db = KennyGoldPerSpot, KennyGoldPerSpotDB
+KennyAddonsHub.RegisterPrices("PriceLog", KennyPriceLog.GetLatest) -- what PriceLog does when installed
+check(#(W.tickers or {}) == 0, "no timer before a session starts")
 check(db.schema == 1 and _G["KennyGoldPerSpotFrame"], "loaded, frame created with unique name")
 check(db.point == nil, "default position not stored")
 
@@ -58,4 +60,29 @@ check(db.spots["Loch Modan"], "zone used as spot name")
 SlashCmdList.KENNYGOLDPERSPOT("report")
 check(_G["KennyGoldPerSpotReportWindow"].shown, "bug report window")
 check(#ns.Core.errors == 0, "no errors recorded: " .. (ns.Core.errors[1] and ns.Core.errors[1].msg or ""))
+-- 0.3.0: timers only while a session runs
+local live = 0
+for _, t in ipairs(W.tickers or {}) do if not t.cancelled then live = live + 1 end end
+check(live == 0 and #W.tickers >= 1, "ticker started for a session and cancelled at stop")
+FT.Start("Timer test"); FT.Pause()
+live = 0
+for _, t in ipairs(W.tickers) do if not t.cancelled then live = live + 1 end end
+check(live == 0, "paused: no timer")
+FT.Stop()
+-- spots leaderboard
+local board = FT.SpotBoard(db.spots)
+check(board[1] and board[1].spot == "Westfall boars", "best spot first")
+W.prints = {}; SlashCmdList.KENNYGOLDPERSPOT("spots")
+check(W.prints[1] and W.prints[1]:find("1. Westfall boars", 1, true), "/goldspot spots")
+-- stale price flagged
+plPrices[2318].t = W.now - 10 * 86400
+local _, src = FT.ItemValue(2318, "ah")
+check(src == "old", "old AH price flagged")
+-- enrichment from NeutralFlip and MatTooltip only when they have data
+check(FT.Extras(2318) == "", "no siblings: nothing extra")
+KennyAddonsHub.Provide("flip", "NeutralFlip", function(id) if id == 2318 then return { profit = 50, from = "Alliance", to = "Neutral" } end end)
+KennyAddonsHub.Provide("verdict", "MatTooltip", function(id) if id == 2318 then return "SELL ON AH" end end)
+local x = FT.Extras(2318)
+check(x:find("SELL ON AH", 1, true) and x:find("Alliance>Neutral +50c", 1, true), "NeutralFlip flip value and MatTooltip verdict shown: " .. x)
+check(FT.Extras(2447) == "", "no data for that item: nothing extra")
 W.done("GoldPerSpot")

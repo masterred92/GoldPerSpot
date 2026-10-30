@@ -3,11 +3,14 @@
 -- a secret value on Midnight-API clients). Coin counts only while a loot window is open.
 local ADDON, ns = ...
 local C, Core = ns.Compat, ns.Core
+local L = Core.L
+local Hub = ns.Hub
 
 local SCHEMA = 1
 local AH_CUT = 0.05
 local MIN_BEST_SECONDS = 300 -- sessions shorter than 5 minutes don't count towards "best"
 local MAX_SESSIONS_PER_SPOT = 50
+local STALE_SECONDS = 3 * 86400 -- an AH price older than this is flagged as old in the totals
 local DEFAULTS = { valuation = "ah", shown = true, locked = false }
 
 local FT = {}
@@ -16,19 +19,20 @@ local db, settings, s -- s = the current session (not saved until Stop)
 local migrations = {}  -- schema 1 is the first release. No migration from FarmTracker 0.1.0: the folder rename gives a new SavedVariables file, and FarmTracker was only a GitHub pre-release.
 
 -- ---------- pricing ----------
+-- AH prices come from our shared price service (PriceLog, else MatTooltip's own scans); GoldPerSpot never scans.
 function FT.AHPrice(itemID)
-  local best
-  local pl = KennyPriceLog and KennyPriceLog.GetLatest and KennyPriceLog.GetLatest(itemID)
-  if pl then best = pl end
-  local mt = KennyMatTooltip and KennyMatTooltip.GetPriceRecord and KennyMatTooltip.GetPriceRecord(itemID)
-  if mt and (not best or (mt.t or 0) > (best.t or 0)) then best = mt end
-  return best and best.p
+  local best = Hub.GetPrice(itemID, ADDON)
+  return best and best.p, best and best.t
 end
 
+-- Value of one item and where it came from: "ah", "old" (AH price older than 3 days, or of unknown age) or "vendor".
 function FT.ItemValue(itemID, mode)
   if mode ~= "vendor" then
-    local ah = FT.AHPrice(itemID)
-    if ah then return math.floor(ah * (1 - AH_CUT)), "ah" end
+    local ah, t = FT.AHPrice(itemID)
+    if ah then
+      local old = not t or t == 0 or (C.Now() - t) > STALE_SECONDS
+      return math.floor(ah * (1 - AH_CUT)), old and "old" or "ah"
+    end
   end
   local info = C.GetItemInfo(itemID)
   return (info and info.sellPrice) or 0, "vendor"
@@ -42,6 +46,9 @@ function FT.Totals(sess, mode)
     list[#list + 1] = { id = id, n = n, v = v * n, src = src }
   end
   table.sort(list, function(a, b) if a.v ~= b.v then return a.v > b.v end return a.id < b.id end)
+  local flagged = 0
+  for _, e in ipairs(list) do if e.src ~= "ah" then flagged = flagged + 1 end end
+  list.flagged = flagged
   local total = itemValue + sess.money
   local gph = sess.elapsed > 0 and total * 3600 / sess.elapsed or 0
   return total, gph, list
@@ -149,10 +156,42 @@ function FT.Lines()
   }
   for i = 1, math.min(5, #list) do
     local e = list[i]
-    lines[#lines + 1] = ("%dx %s  %s%s"):format(e.n, C.GetItemName(e.id) or ("item " .. e.id), C.Money(e.v), e.src == "vendor" and " (v)" or "")
+    lines[#lines + 1] = ("%dx %s  %s%s%s"):format(e.n, C.GetItemName(e.id) or ("item " .. e.id), C.Money(e.v),
+      e.src == "vendor" and " (v)" or (e.src == "old" and " (old)" or ""), FT.Extras(e.id))
+  end
+  if list.flagged > 0 and settings.valuation ~= "vendor" then
+    lines[#lines + 1] = ("|cffffd100%d %s|r"):format(list.flagged, L["items valued at vendor price or an old AH price: (v) / (old)"])
   end
   lines[#lines + 1] = "|cff99ccff" .. FT.Verdict(s.spot, gph, db.spots) .. "|r"
   return lines
+end
+
+-- Data our other addons own, shown only when they have it: NeutralFlip's best flip, MatTooltip's verdict.
+function FT.Extras(itemID)
+  local out = ""
+  local verdict = Hub.Ask("verdict", itemID)
+  if verdict then out = out .. " [" .. verdict .. "]" end
+  local flip = Hub.Ask("flip", itemID)
+  if flip then out = out .. (" |cff33ff99%s %s>%s +%s|r"):format(L["flip"], flip.from, flip.to, C.Money(flip.profit)) end
+  return out
+end
+
+-- Best gold/hour per spot (sessions of 5+ minutes), best first.
+function FT.SpotBoard(spots)
+  local board = {}
+  for name, sp in pairs(spots) do
+    local best, n = nil, 0
+    for _, h in ipairs(sp.sessions) do
+      if h.dur >= MIN_BEST_SECONDS then
+        n = n + 1
+        local r = h.copper * 3600 / h.dur
+        if not best or r > best then best = r end
+      end
+    end
+    if best then board[#board + 1] = { spot = name, gph = best, n = n } end
+  end
+  table.sort(board, function(a, b) if a.gph ~= b.gph then return a.gph > b.gph end return a.spot < b.spot end)
+  return board
 end
 
 -- Current session for the LDB display: total, gold/hour, spot, state ("running", "paused", "stopped") or nil.
@@ -217,11 +256,24 @@ function FT.BuildFrame()
   button(frame, "Pause", 66, function() FT.Pause() end)
   button(frame, "Stop", 124, function() FT.Stop() end)
   button(frame, "Bug", 186, function() Core.ShowReport(FT.StateLines()) end)
-  C_Timer.NewTicker(1, function() if frame:IsShown() then Core.SafeCall("refresh", FT.Refresh) end end)
+end
+
+-- One 1-second ticker, alive only while a session is running (not paused, not stopped, no session: no timer).
+local ticker
+function FT.SyncTicker()
+  local want = s and s.running and not s.paused
+  if want and not ticker then
+    ticker = C_Timer.NewTicker(1, function() Core.SafeCall("refresh", FT.Refresh) end)
+  elseif not want and ticker then
+    ticker:Cancel(); ticker = nil
+  end
+  return ticker ~= nil
 end
 
 function FT.Refresh()
-  if frame then frame.text:SetText(table.concat(FT.Lines(), "\n")) end
+  if frame and frame:IsShown() then frame.text:SetText(table.concat(FT.Lines(), "\n")) end
+  if ns.panelRefresh then ns.panelRefresh() end
+  FT.SyncTicker()
 end
 
 -- ---------- events ----------
@@ -263,13 +315,37 @@ ev:SetScript("OnEvent", function(_, event, arg1)
     KennyGoldPerSpotDB = db
     settings = Core.Settings(db.settings, DEFAULTS)
     FT.BuildFrame()
-    frame:SetShown(settings.shown)
+    frame:SetShown(settings.shown and not Hub.HasHost()) -- inside DEB's window when DEB hosts panels
     FT.Refresh()
     lastMoney = C.GetMoney() or 0
     return
   end
   if db then Core.SafeCall(event, onEvent, event, arg1) end
 end)
+
+-- A panel in DEB's window when DEB hosts panels (the small window stays hidden then).
+local panel = ns.Hub.RegisterPanel(ADDON, "Interface\\AddOns\\GoldPerSpot\\media\\icon", function(parent)
+  local fs = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  fs:SetPoint("TOPLEFT", 8, -8); fs:SetPoint("RIGHT", -8, 0); fs:SetJustifyH("LEFT")
+  ns.panelRefresh = function() if parent:IsVisible() then fs:SetText(table.concat(FT.Lines(), "\n")) end end
+  ns.panelRefresh()
+  return ns.panelRefresh
+end, { title = "Gold per spot" })
+FT.Panel = panel
+
+Core.Setup({ cmd = "/goldspot",
+  required = { "C_Container.GetContainerNumSlots", "C_Container.GetContainerItemInfo", "C_Item.GetItemInfo", "C_Timer.NewTicker" },
+  optional = { "KennyPriceLog", "KennyMatTooltip", "KennyNeutralFlip", "LibStub" },
+  db = function() return db end,
+  firstRun = { L["Welcome! GoldPerSpot measures gold per hour at each farming spot."],
+    L["/goldspot start <spot name> when you begin, stop when you are done; /goldspot spots ranks your spots."],
+    L["Items are valued at AH price (from PriceLog or MatTooltip, if installed) or vendor price. /goldspot debug checks your setup."] },
+  debugLines = function()
+    local n = 0
+    for _ in pairs(db and db.spots or {}) do n = n + 1 end
+    return { ("%s: %d, %s: %s, %s: %s"):format(L["saved spots"], n, L["valuation"], settings and settings.valuation or "?",
+      L["timer running"], tostring(ticker ~= nil)) }
+  end })
 
 SLASH_KENNYGOLDPERSPOT1 = "/goldspot"
 SLASH_KENNYGOLDPERSPOT2 = "/kspot"
@@ -279,7 +355,19 @@ SlashCmdList.KENNYGOLDPERSPOT = function(msg)
   if cmd == "start" then FT.Start(rest)
   elseif cmd == "pause" or cmd == "resume" then FT.Pause()
   elseif cmd == "stop" then FT.Stop()
-  elseif cmd == "show" or cmd == "hide" then settings.shown = (cmd == "show"); frame:SetShown(settings.shown)
+  elseif cmd == "show" then
+    settings.shown = true
+    if Hub.ShowPanel(ADDON) then frame:Hide() else frame:Show() end
+    FT.Refresh()
+  elseif cmd == "hide" then settings.shown = false; frame:Hide()
+  elseif cmd == "spots" then
+    local board = FT.SpotBoard(db.spots)
+    if #board == 0 then Core.Print(L["no spot has a session of 5 minutes or more yet."]) return end
+    for i = 1, math.min(10, #board) do
+      local e = board[i]
+      Core.Print(("%d. %s  %s/hr  (%d %s)"):format(i, e.spot, C.Money(e.gph), e.n, L["sessions"]))
+    end
+  elseif cmd == "debug" then Core.PrintDebug()
   elseif cmd == "lock" then settings.locked = not settings.locked; Core.Print(settings.locked and "frame locked." or "frame unlocked.")
   elseif cmd == "resetpos" then db.point = nil; FT.Place()
   elseif cmd == "value" and (rest == "ah" or rest == "vendor") then settings.valuation = rest; Core.Print("valuing items at " .. rest .. " price."); FT.Refresh()
@@ -295,6 +383,6 @@ SlashCmdList.KENNYGOLDPERSPOT = function(msg)
   elseif cmd == "report" then Core.ShowReport(FT.StateLines())
   elseif cmd == "reset" and rest == "confirm" then db.spots = {}; Core.Print("history cleared.")
   else
-    Core.Print("/goldspot start [spot] | pause | resume | stop | show | hide | lock | resetpos | history | value ah|vendor | report | reset confirm")
+    Core.Print("/goldspot start [spot] | pause | resume | stop | show | hide | lock | resetpos | history | spots | value ah|vendor | debug | report | reset confirm")
   end
 end

@@ -48,7 +48,7 @@ function M.install(env)
   env.NUM_BAG_SLOTS, env.NUM_TOTAL_EQUIPPED_BAG_SLOTS = 4, 5
   env.C_RestrictedActions = { InCombatLockdown = function() return M.combat end }
   env.C_Timer = { After = function(_, fn) M.timers[#M.timers + 1] = fn end,
-                  NewTicker = function() return {} end }
+                  NewTicker = function(_, fn) local t = { fn = fn, Cancel = function(self) self.cancelled = true end }; M.tickers = M.tickers or {}; M.tickers[#M.tickers + 1] = t; return t end }
   env.C_Item = {
     GetItemInfoInstant = function(id) local i = M.items[id]; if i then return id, "", "", "", 0, i[2], i[3] end end,
     GetItemInfo = function(id) local i = M.items[id]; if i then return i[1], "link", 1, 1, 1, "", "", 1, "", 0, i[4], i[2], i[3] end end,
@@ -85,6 +85,7 @@ end
 function M.loadAddon(dir, name)
   local ns = {}
   for line in io.lines(dir .. "/" .. name .. ".toc") do
+    line = line:gsub("\\", "/")
     if line:match("%.lua$") then assert(loadfile(dir .. "/" .. line))(name, ns) end
   end
   M.fire("ADDON_LOADED", name)

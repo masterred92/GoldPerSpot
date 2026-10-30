@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0
+- Loot valued at AH prices from PriceLog or MatTooltip; old prices (over 3 days) are flagged.
+- Shows NeutralFlip's flip value and MatTooltip's verdict for your loot.
+- `/goldspot spots` compares your farming spots.
+- No timers running when you are not farming.
+- A short guide on first login; one shared display-bar entry.
+- `/goldspot debug` checks your setup: client version, every game API the addon needs, and which of Kenny's other addons it is working with.
+- A loud chat warning if this client is missing an API the addon needs, instead of failing silently.
+- English text now lives in `Locales/enUS.lua`, ready for translations.
+- Shared code (KennyShared) is identical in every addon of the family and checked in CI, along with every Blizzard API call (against the Forever UI source) and every DBM/BigWigs/Questie API call (against their source).
+
 ## 0.2.0
 - LibDataBroker display (Titan Panel, ChocolateBar, Bazooka...): live gold/hour; tooltip shows the session; left-click shows/hides the window, right-click starts or pauses.
 - Tests now fail CI on any luacheck warning, and the API check also covers LibDataBroker calls.

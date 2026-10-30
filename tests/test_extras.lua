@@ -8,7 +8,7 @@ function tt:AddLine(s) self.lines[#self.lines + 1] = tostring(s) end
 function tt:AddDoubleLine(a, b) self.lines[#self.lines + 1] = tostring(a) .. ": " .. tostring(b) end
 local function ttText(o) tt.lines = {}; o.OnTooltipShow(tt); return table.concat(tt.lines, " | ") end
 W.loadAddon(".", "GoldPerSpot")
-W.fire("PLAYER_LOGIN")
+W.fire("PLAYER_LOGIN"); W.runTimers()
 local FT = KennyGoldPerSpot
 local o = ldbObjs.GoldPerSpot
 check(o and o.text == "no session", "LDB object, no session")

@@ -13,9 +13,9 @@ end
 
 function FT.InstallBroker()
   if obj then return obj end
-  local ldb = type(LibStub) == "table" and LibStub("LibDataBroker-1.1", true)
-  if not ldb then return nil end
-  obj = ldb:NewDataObject("GoldPerSpot", {
+  -- One shared "Kenny's addons" entry with a menu when several of our addons are installed; our own entry when alone.
+  obj = ns.Hub.Launcher("GoldPerSpot", {
+    leftHint = "Show/hide window", rightHint = "Start, pause or resume",
     type = "data source", text = "GoldPerSpot", label = "Gold/hr",
     icon = "Interface\\AddOns\\GoldPerSpot\\media\\icon",
     OnClick = function(_, button)
@@ -47,4 +47,4 @@ end
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", function() FT.InstallBroker() end)
-C_Timer.NewTicker(5, function() FT.UpdateBroker() end)
+-- No timer of its own: FT.Refresh runs every second while a session is running, and on every start/pause/stop.

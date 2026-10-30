@@ -2,15 +2,18 @@
 ## Title: GoldPerSpot
 ## Notes: Gold/hour for farming sessions from looted mats and coin, valued at your own AH scan prices (or vendor).
 ## Author: Kenny
-## Version: 0.2.0
+## Version: 0.3.0
 ## SavedVariables: KennyGoldPerSpotDB
 ## OptionalDeps: PriceLog, MatTooltip, LibDataBroker-1.1
 ## X-License: MIT
+## X-Website: https://github.com/masterred92/GoldPerSpot
 ## IconTexture: Interface\AddOns\GoldPerSpot\media\icon
 ## X-Curse-Project-ID: 1767898
 ## X-Wago-ID: rNkg9mNa
 
-Compat.lua
-Core.lua
+Libs\KennyShared\Compat.lua
+Libs\KennyShared\Core.lua
+Libs\KennyShared\Hub.lua
+Locales\enUS.lua
 GoldPerSpot.lua
 Broker.lua

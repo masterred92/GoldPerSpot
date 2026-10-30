@@ -1,6 +1,6 @@
 std = "lua51"
 max_line_length = false
-exclude_files = { "tests/**", "tools/**", ".release/**", ".lua/**", ".luarocks/**" }
+exclude_files = { "tests/**", "tools/**", ".release/**", ".lua/**", ".luarocks/**", "wow-ui/**", "index/**", "hosts/**" }
 -- Our own globals (all Kenny-prefixed).
 globals = { "KennyGoldPerSpot", "KennyGoldPerSpotFrame", "KennyGoldPerSpotDB", "SLASH_KENNYGOLDPERSPOT1", "SLASH_KENNYGOLDPERSPOT2", "SlashCmdList" }
 -- WoW API (checked against Blizzard's UI source by tools/verify_api.py) and our other addons' optional globals.
