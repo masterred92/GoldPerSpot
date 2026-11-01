@@ -1,6 +1,6 @@
 <p align="center"><img src="media/logo.png" alt="GoldPerSpot logo" width="200"></p>
 
-# GoldPerSpot (WoW: Forever) v0.3.0
+# GoldPerSpot (WoW: Forever) v0.3.1
 
 [![Tests](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml/badge.svg)](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml) [![WoW: Forever](https://img.shields.io/badge/WoW%3A%20Forever-Interface%2016001-c8a165)](https://github.com/masterred92/GoldPerSpot/blob/main/GoldPerSpot.toc) [![Release](https://img.shields.io/github/v/release/masterred92/GoldPerSpot?label=release)](https://github.com/masterred92/GoldPerSpot/releases) [![License: MIT](https://img.shields.io/github/license/masterred92/GoldPerSpot)](https://github.com/masterred92/GoldPerSpot/blob/main/LICENSE) [![CurseForge](https://img.shields.io/badge/CurseForge-GoldPerSpot-f16436)](https://www.curseforge.com/wow/addons/goldperspot) [![Wago](https://img.shields.io/badge/Wago-GoldPerSpot-c1272d)](https://addons.wago.io/addons/goldperspot)
 

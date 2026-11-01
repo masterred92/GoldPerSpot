@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+- `/goldspot resume` only resumes and `/goldspot pause` only pauses (before, both toggled, so resume could pause a running session).
+- Pause/resume with no session running now says so.
+
 ## 0.3.0
 - Loot valued at AH prices from PriceLog or MatTooltip; old prices (over 3 days) are flagged.
 - Shows NeutralFlip's flip value and MatTooltip's verdict for your loot.

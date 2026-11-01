@@ -2,7 +2,7 @@
 ## Title: GoldPerSpot
 ## Notes: Gold/hour for farming sessions from looted mats and coin, valued at your own AH scan prices (or vendor).
 ## Author: Kenny
-## Version: 0.3.0
+## Version: 0.3.1
 ## SavedVariables: KennyGoldPerSpotDB
 ## OptionalDeps: PriceLog, MatTooltip, LibDataBroker-1.1
 ## X-License: MIT

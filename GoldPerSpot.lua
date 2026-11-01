@@ -107,10 +107,13 @@ function FT.Start(name)
   FT.Refresh()
 end
 
-function FT.Pause()
-  if not (s and s.running) then return end
+-- want: true = pause, false = resume, nil = toggle (the frame's button).
+function FT.Pause(want)
+  if not (s and s.running) then Core.Print("no session running.") return end
+  if want == nil then want = not s.paused end
+  if want == s.paused then Core.Print(s.paused and "already paused." or "already running.") return end
   tick()
-  s.paused = not s.paused
+  s.paused = want
   s.last = C.Clock()
   if not s.paused then snapshot = C.GetBagCounts() end -- ignore anything gained while paused
   Core.Print(s.paused and "paused." or "resumed.")
@@ -350,10 +353,12 @@ Core.Setup({ cmd = "/goldspot",
 SLASH_KENNYGOLDPERSPOT1 = "/goldspot"
 SLASH_KENNYGOLDPERSPOT2 = "/kspot"
 SlashCmdList.KENNYGOLDPERSPOT = function(msg)
+  if not db then return end
   local cmd, rest = (msg or ""):match("^(%S*)%s*(.-)$")
   cmd = cmd:lower()
   if cmd == "start" then FT.Start(rest)
-  elseif cmd == "pause" or cmd == "resume" then FT.Pause()
+  elseif cmd == "pause" then FT.Pause(true)
+  elseif cmd == "resume" then FT.Pause(false)
   elseif cmd == "stop" then FT.Stop()
   elseif cmd == "show" then
     settings.shown = true
