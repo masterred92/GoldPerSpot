@@ -3,11 +3,9 @@
 -- the file to the TOC. Any string without a translation falls back to the English text.
 local _, ns = ...
 ns.Core.AddLocale("enUS", {
-  ["/goldspot start <spot name> when you begin, stop when you are done; /goldspot spots ranks your spots."] = true,
-  ["Items are valued at AH price (from PriceLog or MatTooltip, if installed) or vendor price. /goldspot debug checks your setup."] = true,
   ["Some features are switched off. Type"] = true,
   ["WARNING: this client is missing APIs this addon needs:"] = true,
-  ["Welcome! GoldPerSpot measures gold per hour at each farming spot."] = true,
+  ["Welcome! /goldspot start <spot name> when you begin farming, stop when you are done."] = true,
   ["client"] = true,
   ["flip"] = true,
   ["items valued at vendor price or an old AH price: (v) / (old)"] = true,

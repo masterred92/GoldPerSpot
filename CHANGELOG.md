@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.2
+- Quieter: the first-login welcome is one line instead of three.
+
 ## 0.3.1
 - `/goldspot resume` only resumes and `/goldspot pause` only pauses (before, both toggled, so resume could pause a running session).
 - Pause/resume with no session running now says so.

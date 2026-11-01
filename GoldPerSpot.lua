@@ -340,9 +340,7 @@ Core.Setup({ cmd = "/goldspot",
   required = { "C_Container.GetContainerNumSlots", "C_Container.GetContainerItemInfo", "C_Item.GetItemInfo", "C_Timer.NewTicker" },
   optional = { "KennyPriceLog", "KennyMatTooltip", "KennyNeutralFlip", "LibStub" },
   db = function() return db end,
-  firstRun = { L["Welcome! GoldPerSpot measures gold per hour at each farming spot."],
-    L["/goldspot start <spot name> when you begin, stop when you are done; /goldspot spots ranks your spots."],
-    L["Items are valued at AH price (from PriceLog or MatTooltip, if installed) or vendor price. /goldspot debug checks your setup."] },
+  firstRun = { L["Welcome! /goldspot start <spot name> when you begin farming, stop when you are done."] }, -- one line on first install only
   debugLines = function()
     local n = 0
     for _ in pairs(db and db.spots or {}) do n = n + 1 end
