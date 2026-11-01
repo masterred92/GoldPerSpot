@@ -79,8 +79,10 @@ end
 local snapshot, suspended, pendingBags, lootOpen, lastMoney = nil, 0, false, false, 0
 
 function FT.ApplyBagDiff()
+  -- No session, or paused: nothing to count, so don't read every bag slot (Start/resume take a fresh snapshot).
+  if not (s and s.running) or s.paused then return end
   local now = C.GetBagCounts()
-  if s and s.running and not s.paused and suspended == 0 and snapshot then
+  if suspended == 0 and snapshot then
     for id, n in pairs(now) do
       local d = n - (snapshot[id] or 0)
       if d > 0 then s.items[id] = (s.items[id] or 0) + d end
@@ -305,7 +307,7 @@ local function onEvent(event, arg1)
     suspended = suspended + 1
   elseif suspendClose[event] then
     suspended = math.max(0, suspended - 1)
-    if suspended == 0 then snapshot = C.GetBagCounts() end -- buys/mail/trades don't count as loot
+    if suspended == 0 and s and s.running and not s.paused then snapshot = C.GetBagCounts() end -- buys/mail/trades don't count as loot
   end
   return arg1
 end

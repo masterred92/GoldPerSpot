@@ -1,6 +1,6 @@
 <p align="center"><img src="media/logo.png" alt="GoldPerSpot logo" width="200"></p>
 
-# GoldPerSpot (WoW: Forever) v0.3.2
+# GoldPerSpot (WoW: Forever) v0.3.3
 
 [![Tests](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml/badge.svg)](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml) [![WoW: Forever](https://img.shields.io/badge/WoW%3A%20Forever-Interface%2016001-c8a165)](https://github.com/masterred92/GoldPerSpot/blob/main/GoldPerSpot.toc) [![Release](https://img.shields.io/github/v/release/masterred92/GoldPerSpot?label=release)](https://github.com/masterred92/GoldPerSpot/releases) [![License: MIT](https://img.shields.io/github/license/masterred92/GoldPerSpot)](https://github.com/masterred92/GoldPerSpot/blob/main/LICENSE) [![CurseForge](https://img.shields.io/badge/CurseForge-GoldPerSpot-f16436)](https://www.curseforge.com/wow/addons/goldperspot) [![Wago](https://img.shields.io/badge/Wago-GoldPerSpot-c1272d)](https://addons.wago.io/addons/goldperspot)
 
@@ -42,7 +42,7 @@ The frame has Start, Pause, Stop and Bug (report) buttons.
 2. Put the addon folder (`GoldPerSpot`) in `World of Warcraft\_forever_\Interface\AddOns\`. That folder sits next to `_retail_`; the exact name may differ.
 3. Restart the game, or type `/reload`. Check it is ticked in the AddOns list on the character screen.
 
-## In-game test checklist
+## In-game test checklist (launch day)
 1. The frame appears at the left middle of the screen, doesn't overlap the minimap, quest tracker or Polestar, and can be dragged; its position survives `/reload`.
 2. Click Start, then skin 5 beasts and pick 5 herbs: the item counts match what entered your bags.
 3. Loot coin from a mob: Coin goes up. Hand in a quest with a gold reward: Coin does **not** change.
@@ -54,6 +54,9 @@ The frame has Start, Pause, Stop and Bug (report) buttons.
 9. `/goldspot report` or the Bug button: a copyable report opens.
 10. In the AddOns list (character select or Esc > AddOns), GoldPerSpot shows its icon. If it shows a blank or green square, report it; the addon still works.
 11. With Titan Panel or ChocolateBar: the Gold/hr display shows 'no session'; right-click starts one and the number updates; hide the window and it still updates.
+
+## Licence
+MIT. Written from scratch; no code copied from other addons.
 
 ## Development
 `tests/run.sh [path-to-wow-ui-source-forever]` runs `luac -p`, luacheck, the mock-client tests and (with a path) the API check against Blizzard's UI source. GitHub Actions runs the same on every push. Releases are packaged by [BigWigsMods/packager](https://github.com/BigWigsMods/packager) only when a `v*` tag is pushed.

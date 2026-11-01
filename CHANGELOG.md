@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.3
+- Smoother: bag counts are no longer read on every bag update while no session is running or the session is paused.
+
 ## 0.3.2
 - Quieter: the first-login welcome is one line instead of three.
 
