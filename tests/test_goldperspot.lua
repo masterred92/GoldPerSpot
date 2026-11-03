@@ -85,4 +85,15 @@ KennyAddonsHub.Provide("verdict", "MatTooltip", function(id) if id == 2318 then 
 local x = FT.Extras(2318)
 check(x:find("SELL ON AH", 1, true) and x:find("Alliance>Neutral +50c", 1, true), "NeutralFlip flip value and MatTooltip verdict shown: " .. x)
 check(FT.Extras(2447) == "", "no data for that item: nothing extra")
+-- 0.3.4: stopping in combat still counts loot from that fight; a short session says it wasn't saved
+W.prints = {}
+FT.Start("Combat stop"); W.clock = W.clock + 120
+W.combat = true; W.bags[0][7] = { 2318, 4 }; W.fire("BAG_UPDATE_DELAYED")
+FT.Stop(); W.combat = false; W.fire("PLAYER_REGEN_ENABLED")
+local cs = db.spots["Combat stop"]
+check(cs and cs.sessions[1].items[2318] == 4, "stop during combat counts the last fight's loot")
+W.prints = {}; FT.Start("Short"); W.clock = W.clock + 10; FT.Stop()
+check(not db.spots["Short"] and W.prints[#W.prints]:find("not saved", 1, true), "short session says it was not saved")
+W.prints = {}; SlashCmdList.KENNYGOLDPERSPOT("resetpos")
+check(W.prints[1] and W.prints[1]:find("default spot", 1, true), "/goldspot resetpos confirms")
 W.done("GoldPerSpot")

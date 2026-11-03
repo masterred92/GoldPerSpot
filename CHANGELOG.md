@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.4
+- Stopping a session during combat now counts the loot from that last fight (before, it was dropped).
+- Stopping a session shorter than 1 minute says it wasn't saved, instead of leaving you to wonder why it's missing from `/goldspot history`.
+- `/goldspot resetpos` confirms in chat that the frame moved back.
+
 ## 0.3.3
 - Smoother: bag counts are no longer read on every bag update while no session is running or the session is paused.
 

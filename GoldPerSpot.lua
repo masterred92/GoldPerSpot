@@ -125,7 +125,8 @@ end
 function FT.Stop()
   if not (s and s.running) then Core.Print("no session running.") return end
   tick()
-  if not C.InCombat() then FT.ApplyBagDiff() end
+  FT.ApplyBagDiff() -- also in combat: loot from the last fight would otherwise be lost (reading bags is allowed in combat)
+  pendingBags = false
   local total, gph = FT.Totals(s, settings.valuation)
   local verdict = FT.Verdict(s.spot, gph, db.spots)
   if s.elapsed >= 60 then
@@ -138,7 +139,8 @@ function FT.Stop()
     while #sp.sessions > MAX_SESSIONS_PER_SPOT do table.remove(sp.sessions, 1) end
   end
   s.running = false
-  Core.Print(("%s: %s in %d min. %s"):format(s.spot, C.Money(total), math.floor(s.elapsed / 60), verdict))
+  Core.Print(("%s: %s in %d min. %s%s"):format(s.spot, C.Money(total), math.floor(s.elapsed / 60), verdict,
+    s.elapsed >= 60 and "" or " (under 1 minute, not saved)"))
   FT.Refresh()
 end
 
@@ -374,7 +376,7 @@ SlashCmdList.KENNYGOLDPERSPOT = function(msg)
     end
   elseif cmd == "debug" then Core.PrintDebug()
   elseif cmd == "lock" then settings.locked = not settings.locked; Core.Print(settings.locked and "frame locked." or "frame unlocked.")
-  elseif cmd == "resetpos" then db.point = nil; FT.Place()
+  elseif cmd == "resetpos" then db.point = nil; FT.Place(); Core.Print("frame moved back to its default spot.")
   elseif cmd == "value" and (rest == "ah" or rest == "vendor") then settings.valuation = rest; Core.Print("valuing items at " .. rest .. " price."); FT.Refresh()
   elseif cmd == "history" then
     local all = {}

@@ -1,6 +1,6 @@
 <p align="center"><img src="media/logo.png" alt="GoldPerSpot logo" width="200"></p>
 
-# GoldPerSpot (WoW: Forever) v0.3.3
+# GoldPerSpot (WoW: Forever) v0.3.4
 
 [![Tests](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml/badge.svg)](https://github.com/masterred92/GoldPerSpot/actions/workflows/tests.yml) [![WoW: Forever](https://img.shields.io/badge/WoW%3A%20Forever-Interface%2016001-c8a165)](https://github.com/masterred92/GoldPerSpot/blob/main/GoldPerSpot.toc) [![Release](https://img.shields.io/github/v/release/masterred92/GoldPerSpot?label=release)](https://github.com/masterred92/GoldPerSpot/releases) [![License: MIT](https://img.shields.io/github/license/masterred92/GoldPerSpot)](https://github.com/masterred92/GoldPerSpot/blob/main/LICENSE) [![CurseForge](https://img.shields.io/badge/CurseForge-GoldPerSpot-f16436)](https://www.curseforge.com/wow/addons/goldperspot) [![Wago](https://img.shields.io/badge/Wago-GoldPerSpot-c1272d)](https://addons.wago.io/addons/goldperspot)
 
@@ -21,16 +21,16 @@ How it counts:
 
 Read-only: it never loots, clicks or moves for you.
 
-**New in 0.2.0**
+**Extras**
 - **LDB display:** with Titan Panel, ChocolateBar, Bazooka or another LibDataBroker display, GoldPerSpot shows your current gold/hour. Hover for the full session, left-click shows or hides the window, right-click starts or pauses a session.
 
 **Works with:** PriceLog or MatTooltip (AH prices for your loot), NeutralFlip (flip value), MatTooltip (sell-or-craft verdict). Without them it uses vendor prices. Works fully on its own.
 
 ## Download
-- **CurseForge:** https://www.curseforge.com/wow/addons/goldperspot (first release coming at launch, Nov 4). Author: [MasterRed92](https://www.curseforge.com/members/masterred92/projects).
-- **Wago Addons:** https://addons.wago.io/addons/goldperspot (first release coming at launch, Nov 4).
-- **GitHub:** [Releases](https://github.com/masterred92/GoldPerSpot/releases) (coming with the first tagged release) · [Issues](https://github.com/masterred92/GoldPerSpot/issues)
-- **Companion addons** (optional, they share AH scans): [NeutralFlip](https://github.com/masterred92/NeutralFlip) · [PriceLog](https://github.com/masterred92/PriceLog) · [MatTooltip](https://github.com/masterred92/MatTooltip)
+- **CurseForge:** https://www.curseforge.com/wow/addons/goldperspot. Author: [MasterRed92](https://www.curseforge.com/members/masterred92/projects).
+- **Wago Addons:** https://addons.wago.io/addons/goldperspot.
+- **GitHub:** [Releases](https://github.com/masterred92/GoldPerSpot/releases) · [Issues](https://github.com/masterred92/GoldPerSpot/issues)
+- **Companion addons** (optional, they share AH scans): [NeutralFlip](https://github.com/masterred92/NeutralFlip) · [PriceLog](https://github.com/masterred92/PriceLog) · [MatTooltip](https://github.com/masterred92/MatTooltip) · [Dwarf Explorer's Bible](https://www.curseforge.com/wow/addons/dwarf-explorers-bible)
 
 ## Commands
 Alias: `/kspot`.
